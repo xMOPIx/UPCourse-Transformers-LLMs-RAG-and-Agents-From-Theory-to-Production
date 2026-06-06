@@ -17,10 +17,3 @@ The first run downloads two small tokenizers from Hugging Face (a few hundred KB
 - `PARAGRAPH_EN` / `PARAGRAPH_MINE` at the top of `ex_01_tokenise.py` — replace `PARAGRAPH_MINE` with your own language to compute *your* multilingual penalty.
 - `TOKENIZER_A` / `TOKENIZER_B` — any Hugging Face tokenizer id works (`gpt2`, `bert-base-uncased`, `bert-base-multilingual-cased`, …).
 
-## What to deliver
-
-A short report (markdown or PDF, half a page is plenty) in your course repo at `week1/exercise1/`:
-
-- The token count for the demo sentence (*"The model never sees the letters in strawberry."*).
-- The multilingual penalty number for your language vs. English.
-- For the four code-ish inputs: one sentence per row on where the two tokenizers disagree most and why you think that might be.

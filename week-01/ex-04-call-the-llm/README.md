@@ -53,11 +53,3 @@ You should get a one-sentence reply, plus the token `usage` and the
   fails on Ollama. Why? Because `/v1/responses` is OpenAI-specific;
   `/v1/chat/completions` is the format everyone speaks.
 
-## What to deliver
-
-A **PDF**, uploaded to Moodle, in your own words:
-
-- the model you ran and the machine you ran it on;
-- the output of `call.py` and `call.sh` (paste it);
-- what changed when you changed the temperature;
-- one sentence on why the *same code* reached a different model.
