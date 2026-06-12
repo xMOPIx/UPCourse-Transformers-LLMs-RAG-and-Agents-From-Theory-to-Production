@@ -342,6 +342,39 @@ def wait_spinner():
     )
 
 
+def show_setup(retriever: "WholeFileRetriever", mode: str) -> Panel:
+    """Disclose the assistant's configuration before any message: the system prompt, the
+    prompt template, and the knowledge file — plus where the file goes in this mode."""
+    file_text = retriever.text
+    if len(file_text) > 1500:
+        file_text = file_text[:1500] + f"\n… [+{len(retriever.text) - 1500} more chars]"
+
+    if mode == MODE_SYSTEM_GROUNDING:
+        sys_note = "in this mode the knowledge file is appended to the system prompt (retrieved once, at setup)"
+        tmpl_note = "not used in this mode — your message is sent bare; the file lives in the system prompt"
+        where = "the SYSTEM PROMPT, once"
+    else:
+        sys_note = "just the instruction; the file is injected per turn through the prompt template below"
+        tmpl_note = "used every turn — the file goes in {context}, your message in {question}"
+        where = "the PROMPT TEMPLATE, every turn"
+
+    g = Table.grid(padding=(0, 0))
+    g.add_row(Text("① SYSTEM PROMPT", style="bold bright_magenta on grey23"))
+    g.add_row(Text(SYSTEM_PROMPT_BASE, style="bright_white on grey23"))
+    g.add_row(Text(f"   ↳ {sys_note}", style="italic grey70 on grey23"))
+    g.add_row(Text("", style="on grey23"))
+    g.add_row(Text("② PROMPT TEMPLATE", style="bold bright_yellow on grey23"))
+    g.add_row(Text(PROMPT_TEMPLATE, style="bright_white on grey23"))
+    g.add_row(Text(f"   ↳ {tmpl_note}", style="italic grey70 on grey23"))
+    g.add_row(Text("", style="on grey23"))
+    g.add_row(Text(f"③ KNOWLEDGE FILE · {os.path.basename(retriever.path)} "
+                   f"({len(retriever.text)} chars, ~{_approx_tokens(retriever.text)} tokens) "
+                   f"→ goes into {where}", style="bold bright_green on grey23"))
+    g.add_row(Text(file_text, style="grey70 on grey23"))
+    return Panel(g, title="🧩 Assistant setup — disclosed before any message",
+                 border_style="bright_cyan", style="on grey23", padding=(1, 2))
+
+
 # =============================================================================================================== #
 # Chat loop                                                                                                       #
 # =============================================================================================================== #
@@ -360,6 +393,8 @@ def run_chat(retriever: WholeFileRetriever, mode: str):
         title="📚 Context Explorer — single-file RAG", border_style="bright_magenta", style="on grey23", padding=(1, 2)))
     console.print()
     console.print(show_flow(mode, ui.stateful_augment))
+    console.print()
+    console.print(show_setup(retriever, mode))
 
     while True:
         console.print()
@@ -393,6 +428,8 @@ def run_chat(retriever: WholeFileRetriever, mode: str):
             console.print(Panel(Text(f"mode = {mode} · conversation reset.", style="bright_white on grey23"),
                                 border_style="green", style="on grey23"))
             console.print(show_flow(mode, ui.stateful_augment))
+            console.print()
+            console.print(show_setup(retriever, mode))
             continue
         if cmd.startswith("/file "):
             new_path = cmd[len("/file "):].strip()
@@ -403,6 +440,8 @@ def run_chat(retriever: WholeFileRetriever, mode: str):
                 token_history = []
                 console.print(Panel(Text(f"Loaded {new_path} ({len(retriever.text)} chars) · conversation reset.",
                                          style="bright_white on grey23"), border_style="green", style="on grey23"))
+                console.print()
+                console.print(show_setup(retriever, mode))
             except OSError as exc:
                 console.print(Panel(Text(f"Could not load {new_path}: {exc}", style="bold bright_white on dark_red"),
                                     border_style="red", style="on dark_red"))

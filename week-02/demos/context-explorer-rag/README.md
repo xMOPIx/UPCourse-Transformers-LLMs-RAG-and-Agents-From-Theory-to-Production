@@ -26,6 +26,11 @@ This is the same shape as serving an assistant over an OpenAI-compatible API (e.
 🖥️  CHAT UI        appends (your message, response) → history   ✗ augmentation NOT saved
 ```
 
+At startup (and whenever you `/mode` or `/file`) the explorer discloses the **assistant
+setup** — the system prompt, the prompt template, and the knowledge file — and tells you
+where the file goes in the current mode. So you see what is configured before you watch it
+get assembled.
+
 Because the endpoint is **stateless**, the augmentation is built fresh every turn and
 thrown away. The UI history stays bare. The system prompt and the file the LLM sees are
 **never** in the conversation the user sees. Watch the two panels each turn:
