@@ -11,4 +11,4 @@
 Una vez verificado que Docker está corriendo, puedes levantar todo el entorno con un único comando. Ejecuta en la raíz del proyecto:
 
 ```bash
-sudo docker compose up --build -d
+sudo docker compose up --build 
