@@ -1,0 +1,7 @@
+services:
+  chatbot:
+    build: .
+    ports:
+      - "6661:6661"
+    env_file:
+      - .env
